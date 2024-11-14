@@ -140,27 +140,32 @@ export function addEventListener() {
             }
         });
         Promise.all(promises)
-            .then(results => {
-                let combinedResults = '';
-                if (settings.topErrorSwitch.checked) {
-                    const nonErrorResults = results.filter(result => result !== null);
-                    combinedResults = errorMessages.concat(nonErrorResults);
-                } else {
-                    const nonErrorResults = results.filter(result => result !== null);
-                    combinedResults = nonErrorResults.concat(errorMessages);
-                }
-                combinedResults = combinedResults.join('<br>');
-                if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
-                    combinedResults = Array.from(new Set(combinedResults.split('<br>')));
-                }                
-                combinedResults = Array.isArray(combinedResults) ? combinedResults.join('<br>') : combinedResults;
-                Util.setOutput('Output', combinedResults, COLOR.PRIMARY, true);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Util.setOutput('Output Error', 'An error occurred during processing.', COLOR.DANGER, false);
-            });
-        modOutput.copyButton.disabled = false;
+        .then(results => {
+            let combinedResults = '<table class="table table-sm table-hover">';
+            
+            let nonErrorResults = results.filter(result => result !== null);
+            if (settings.topErrorSwitch.checked) {
+                combinedResults += errorMessages.map(message => `<tr><td>${message}</td></tr>`).join('');
+                combinedResults += nonErrorResults.map(result => `<tr><td>${result}</td></tr>`).join('');
+            } else {
+                combinedResults += nonErrorResults.map(result => `<tr><td>${result}</td></tr>`).join('');
+                combinedResults += errorMessages.map(message => `<tr><td>${message}</td></tr>`).join('');
+            }
+    
+            if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
+                const allResults = [...errorMessages, ...nonErrorResults];
+                const uniqueResults = Array.from(new Set(allResults.join('<br>').split('<br>')));
+                combinedResults = uniqueResults.map(result => `<tr><td>${result}</td></tr>`).join('');
+            }
+                combinedResults += '</table>';
+            Util.setOutput('Output', combinedResults, COLOR.PRIMARY, true);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Util.setOutput('Output Error', 'An error occurred during processing.', COLOR.DANGER, false);
+        });
+    
+    modOutput.copyButton.disabled = false;    
     });
 
     modOutput.downloadButton.addEventListener('click', async () => {
