@@ -1,4 +1,5 @@
 import { modal, modOutput, settings } from './elements.js';
+import { getDownloadList, getErrorMessages } from './modHandler.js';
 
 export function setModal(title, body, footer) {
     modal.modalTitle.innerHTML = title;
@@ -20,34 +21,29 @@ export function setOutput(title, body, color, border) {
 export function addEventListener() {
     modOutput.copyButton.addEventListener('click', async () => {
         modOutput.copyButton.disabled = true;
-        let r = '';
         if (settings.downloadSwitch.checked && !settings.errorSwitch.checked) {
-            let r = modOutput.text.innerText;
-            r = r.split('\n');
-            r = r.filter(item => !item.includes('(404)') && !item.includes('(Mod not found under '));
-            r = r.join('\n');
-            navigator.clipboard.writeText(r.toString());
+            navigator.clipboard.writeText(getDownloadList().join('\n'));
             if (!modOutput.title.innerText.includes('(Copied)')) {
                 modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
             }
             modOutput.copyButton.disabled = false;
             return;
         } else if (!settings.downloadSwitch.checked && settings.errorSwitch.checked) {
-            let r = modOutput.text.innerText;
-            r = r.split('\n');
-            r = r.filter(item => !item.includes('https://mediafiles.forgecdn.net/files/'));
-            r = r.join('\n');
-            navigator.clipboard.writeText(r.toString());
+            const err = document.createElement('div');
+            err.innerHTML = getErrorMessages().join('\n');
+            navigator.clipboard.writeText(err.innerText);
             if (!modOutput.title.innerText.includes('(Copied)')) {
                 modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
             }
             modOutput.copyButton.disabled = false;
             return;
         } else if (settings.downloadSwitch.checked && settings.errorSwitch.checked) {
+            const err = document.createElement('div');
+            err.innerHTML = getErrorMessages().join('\n');
+            navigator.clipboard.writeText(err.innerText + getDownloadList().join('\n'));
             if (!modOutput.title.innerText.includes('(Copied)')) {
                 modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
             }
-            navigator.clipboard.writeText(modOutput.text.innerText);
         } else if (!settings.downloadSwitch.checked && !settings.errorSwitch.checked) {
             if (!modOutput.title.innerText.includes('(Copying disabled in Settings)')){
                 modOutput.title.innerText = modOutput.title.innerText + ' (Copying disabled in Settings)';

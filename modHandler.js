@@ -1,8 +1,21 @@
 import { modInput, COLOR, TEXTCOLOR, modOutput, settings } from './elements.js';
 import * as Util from './util.js';
 
+let downloadList = [];        
+let errorMessages = [];
+
+export function getDownloadList(){
+    return downloadList;
+} 
+
+export function getErrorMessages(){
+    return errorMessages;
+}
+
+
 export function addEventListener() {
     modInput.loadButton.addEventListener('click', () => {
+        downloadList = [];
         modOutput.copyButton.disabled = true;
         if (modInput.textArea.value.trim() === '') {
             Util.setOutput('Output Error', 'No text in the URL text area.', COLOR.DANGER, false);
@@ -15,7 +28,7 @@ export function addEventListener() {
             return;
         }
         let promises = [];
-        let errorMessages = [];
+        errorMessages = []
 
         parseInput(modInput.textArea.value).forEach(e => {
             let verison = modInput.verisonArea.value.toString();
@@ -52,7 +65,10 @@ export function addEventListener() {
                                 if (loaderLocated) {
                                     let id = text['versions'][verison][count]['id'].toString();
                                     let name = text['versions'][verison][count]['name'].toString().replace(' ', '%20').replace('+', '%2B');
-                                    return 'https://mediafiles.forgecdn.net/files/' + id.substring(0, 4) + '/' + parseInt(id.substring(4)) + '/' + name;
+                                    let thumbnail = text['thumbnail'].toString();
+                                    let title = text['title'].toString();
+                                    downloadList.push('https://mediafiles.forgecdn.net/files/' + id.substring(0, 4) + '/' + parseInt(id.substring(4)) + '/' + name);
+                                    return '<td><img src="' + thumbnail + `" style="width: 50px; height: 50px;"></td>`+ '<td  width="90%"> <b>'+title+'</b><br> https://mediafiles.forgecdn.net/files/' + id.substring(0, 4) + '/' + parseInt(id.substring(4)) + '/' + name + '</td>';
                                 } else {
                                     const errorMessage = `<i class="bi bi-bug-fill"></i> (<b class='${TEXTCOLOR.WARNING}'>Mod not found under ${loader}</b>): ${e.replace('https://api.cfwidget.com/', 'https://www.curseforge.com/')}`;
                                     errorMessages.push(errorMessage);
@@ -76,6 +92,7 @@ export function addEventListener() {
                 );
             } else if (e.includes('https://modrinth.com/mod/')) {
                 e = e.replace('https://modrinth.com/mod/', 'https://api.modrinth.com/v2/project/');
+                const nonVerison = e;
                 e += '/version';
                 promises.push(
                     fetch(e)
@@ -87,7 +104,7 @@ export function addEventListener() {
                             }
                             return response.json();
                         })
-                        .then(text => {
+                        .then(async text => {
                             if (text) {
                                 let count = 0;
                                 let loaderLocated = false;
@@ -113,7 +130,17 @@ export function addEventListener() {
                                     });
                                 }
                                 if (loaderLocated) {
-                                    return text[count]['files'][0]['url'];
+                                    let thumbnail = ``;
+                                    let title = ``;
+                                    await fetch(nonVerison).then(async response => {
+                                        if (response.ok){
+                                            const rep = await response.json();
+                                            thumbnail = rep['icon_url'];
+                                            title = rep['title'];
+                                        }
+                                    });
+                                    downloadList.push(text[count]['files'][0]['url']);
+                                    return  '<td><img src="' + thumbnail + `" style="width: 50px; height: 50px;"></td><td>` +`<b>${title}</b><br>` + text[count]['files'][0]['url'] + `</td>`;
                                 } else {
                                     const errorMessage = `<i class="bi bi-bug-fill"></i> (<b class='${TEXTCOLOR.WARNING}'>Mod not found under ${loader}</b>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}`;
                                     errorMessages.push(errorMessage);
@@ -145,19 +172,19 @@ export function addEventListener() {
             
             let nonErrorResults = results.filter(result => result !== null);
             if (settings.topErrorSwitch.checked) {
-                combinedResults += errorMessages.map(message => `<tr><td>${message}</td></tr>`).join('');
-                combinedResults += nonErrorResults.map(result => `<tr><td>${result}</td></tr>`).join('');
+                combinedResults += errorMessages.map(message => `<tr><td></td><td>${message}</td>`).join('</tr>');
+                combinedResults += nonErrorResults.map(result => `<tr>${result}>`).join('</tr>');
             } else {
-                combinedResults += nonErrorResults.map(result => `<tr><td>${result}</td></tr>`).join('');
-                combinedResults += errorMessages.map(message => `<tr><td>${message}</td></tr>`).join('');
+                combinedResults += nonErrorResults.map(result => `<tr>${result}>`).join('</tr>');
+                combinedResults += errorMessages.map(message => `<tr><td></td><td>${message}></td>`).join('</tr>');
             }
     
             if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
                 const allResults = [...errorMessages, ...nonErrorResults];
-                const uniqueResults = Array.from(new Set(allResults.join('<br>').split('<br>')));
-                combinedResults = uniqueResults.map(result => `<tr><td>${result}</td></tr>`).join('');
+                const uniqueResults = Array.from(new Set(allResults.join('</tr>').split('</tr>')));
+                combinedResults = uniqueResults.map(result => `<tr>${result}`).join('</tr>');
             }
-                combinedResults += '</table>';
+            combinedResults += '</table>';
             Util.setOutput('Output', combinedResults, COLOR.PRIMARY, true);
         })
         .catch(error => {
@@ -260,10 +287,10 @@ export function addEventListener() {
 
 async function batchDownload() {
     modOutput.downloadButton.disabled = true;
-    let r = modOutput.text.innerText;
-    r = r.split('\n');
-    r = r.filter(item => !item.includes('(404)') && !item.includes('(Mod not found under '));
-    r.forEach(function (e) {
+    // let r = modOutput.text.innerText;
+    // // r = r.split('\n');
+    // // r = r.filter(item => !item.includes('(404)') && !item.includes('(Mod not found under '));
+    downloadList.forEach(function (e) {
         fetch(e)
             .then(res => res.blob())
             .then(blob => {
@@ -298,13 +325,11 @@ async function zipDownload() {
 
     var progressBarNum = 0
 
-    let r = modOutput.text.innerText;
-    r = r.split('\n');
-    r = r.filter(item => !item.includes('(404)') && !item.includes('(Mod not found under '));
+    // let r = modOutput.text.innerText;
+    // r = r.split('\n');
+    // r = r.filter(item => !item.includes('(404)') && !item.includes('(Mod not found under '));
 
     const zip = new JSZip();
-
-
 
     function downloadAndZip(link, index) {
         return new Promise((resolve, reject) => {
@@ -321,7 +346,7 @@ async function zipDownload() {
                     } else {
                         zip.file(link.slice(57).replaceAll('%20', ' ').replaceAll('%2B', '+'), blob);
                     }
-                    updateProgressBar(progressBarNum+1, r.length); // Update progress bar
+                    updateProgressBar(progressBarNum+1, downloadList.length); // Update progress bar
                     progressBarNum = progressBarNum + 1;
                     resolve();
                 })
@@ -330,7 +355,7 @@ async function zipDownload() {
     }
 
     try {
-        await Promise.all(r.map((link, index) => downloadAndZip(link, index)));
+        await Promise.all(downloadList.map((link, index) => downloadAndZip(link, index)));
 
         const blob = await zip.generateAsync({ type: 'blob' });
 
