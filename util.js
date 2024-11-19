@@ -11,6 +11,7 @@ export function setModal(title, body, footer) {
 export function setOutput(title, body, color, border) {
     modOutput.title.innerHTML = title;
     modOutput.text.innerHTML = body;
+    modOutput.text.innerHTML =  modOutput.text.innerHTML.replaceAll('&gt;', '')
     if (border) {
         modOutput.div.setAttribute('class', `card border-${color}`);
     } else {

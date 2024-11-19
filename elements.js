@@ -1,6 +1,7 @@
 export const root = document.getElementById('root');
 export const body = document.getElementById('body');
 export const style = document.getElementById('style');
+export const urlsText = document.getElementById('urlsText');
 
 export const modOutput = {
     div: document.getElementById('modOutput'),

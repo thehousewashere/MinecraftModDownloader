@@ -1,4 +1,4 @@
-import { modInput, COLOR, TEXTCOLOR, modOutput, settings } from './elements.js';
+import { modInput, COLOR, TEXTCOLOR, modOutput, settings, urlsText } from './elements.js';
 import * as Util from './util.js';
 
 let downloadList = [];        
@@ -29,8 +29,10 @@ export function addEventListener() {
         }
         let promises = [];
         errorMessages = []
+        let urlCount = 0;
 
         parseInput(modInput.textArea.value).forEach(e => {
+            urlCount++;
             let verison = modInput.verisonArea.value.toString();
             let loader = modInput.loaderDropdown.value;
             if (e.includes('https://www.curseforge.com/')) {
@@ -168,9 +170,13 @@ export function addEventListener() {
         });
         Promise.all(promises)
         .then(results => {
+            urlsText.innerHTML = `URLs <br> (${urlCount})`;
             let combinedResults = '<table class="table table-sm table-hover">';
-            
             let nonErrorResults = results.filter(result => result !== null);
+            if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
+                nonErrorResults = nonErrorResults.filter((item, index) => nonErrorResults.indexOf(item) === index);
+            }
+
             if (settings.topErrorSwitch.checked) {
                 combinedResults += errorMessages.map(message => `<tr><td></td><td>${message}</td>`).join('</tr>');
                 combinedResults += nonErrorResults.map(result => `<tr>${result}>`).join('</tr>');
@@ -178,14 +184,8 @@ export function addEventListener() {
                 combinedResults += nonErrorResults.map(result => `<tr>${result}>`).join('</tr>');
                 combinedResults += errorMessages.map(message => `<tr><td></td><td>${message}></td>`).join('</tr>');
             }
-    
-            if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
-                const allResults = [...errorMessages, ...nonErrorResults];
-                const uniqueResults = Array.from(new Set(allResults.join('</tr>').split('</tr>')));
-                combinedResults = uniqueResults.map(result => `<tr>${result}`).join('</tr>');
-            }
             combinedResults += '</table>';
-            Util.setOutput('Output', combinedResults, COLOR.PRIMARY, true);
+            Util.setOutput(`Output (${downloadList.length})`, combinedResults, COLOR.PRIMARY, true);
         })
         .catch(error => {
             console.error('Error:', error);
