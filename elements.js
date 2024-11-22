@@ -3,7 +3,7 @@ export const body = document.getElementById('body');
 export const style = document.getElementById('style');
 export const urlsText = document.getElementById('urlsText');
 export const APP = window.location.hostname == '';
-export const VERSION = '24.11.19';
+export const VERSION = '24.11.21';
 
 
 export const modOutput = {
