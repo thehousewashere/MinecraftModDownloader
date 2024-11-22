@@ -175,6 +175,11 @@ export function addEventListener() {
             let nonErrorResults = results.filter(result => result !== null);
             if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
                 nonErrorResults = nonErrorResults.filter((item, index) => nonErrorResults.indexOf(item) === index);
+                //TODO: Remove Modrinth and CurseForge duplicates
+                // downloadList.forEach(url => {
+                //     console.log(url);
+                //     console.log(Util.extractFileName(url));
+                // });
             }
 
             if (settings.topErrorSwitch.checked) {
@@ -185,7 +190,7 @@ export function addEventListener() {
                 combinedResults += errorMessages.map(message => `<tr><td></td><td>${message}></td>`).join('</tr>');
             }
             combinedResults += '</table>';
-            Util.setOutput(`Output (${downloadList.length})`, combinedResults, COLOR.PRIMARY, true);
+            Util.setOutput(`Output (${nonErrorResults.length})`, combinedResults, COLOR.PRIMARY, true);
         })
         .catch(error => {
             console.error('Error:', error);

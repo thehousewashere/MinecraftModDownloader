@@ -9,9 +9,9 @@ export async function settingsModal(){
     settings.removeDupesSwitch.checkVisibility = localStorage.getItem('removeDupesSwitch') === 'true';
     settings.modal.show();
     if (await Util.newVersion()){
-        settings.updateLink.style.visibility = 'block';
+        settings.updateLink.style.display = 'block';
     } else {
-        settings.updateLink.style.visibility = 'collapse';
+        settings.updateLink.style.display = 'none';
     }
     addEventListener();
 }

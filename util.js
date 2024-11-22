@@ -1,6 +1,41 @@
 import { modal, modOutput, settings, VERSION } from './elements.js';
 import { getDownloadList, getErrorMessages } from './modHandler.js';
 
+// async function getModrinthDownloadLink(fileName) {
+//     const searchUrl = `https://api.modrinth.com/v2/search?query=${fileName}&limit=5`;
+    
+//     try {
+//       const searchResponse = await fetch(searchUrl);
+//       const searchData = await searchResponse.json();
+  
+//       for (let mod of searchData.hits) {
+//         const versionUrl = `https://api.modrinth.com/v2/project/${mod.slug}/version`;
+//         const versionResponse = await fetch(versionUrl);
+//         const versionData = await versionResponse.json();
+  
+//         for (let version of versionData) {
+//           for (let i = 0; i < version.files.length; i++) {
+//             if (version.files[i].filename === fileName) {
+//               return version.files[i].url;
+//             }
+//           }
+//         }
+//       }
+  
+//       return null;
+//     } catch (error) {
+//       return null;
+//     }
+//   }
+  
+//   getModrinthDownloadLink('fileName').then(link => {
+//     console.log(link);
+//   });
+
+export function extractFileName(url) {
+    const parts = url.split('/');
+    return parts[parts.length - 1];
+}
 
 async function fetechGitHubAPI(){
     const response = await fetch('https://api.github.com/repos/thehousewashere/MinecraftModDownloader/releases')
@@ -15,7 +50,7 @@ export async function newVersion() {
     if (!api){
         return false;
     }
-    return VERSION < api[0]['name'];
+    return api[0]['name'] > VERSION;
 }
 
 export function setModal(title, body, footer) {
