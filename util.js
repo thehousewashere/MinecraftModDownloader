@@ -1,5 +1,22 @@
-import { modal, modOutput, settings } from './elements.js';
+import { modal, modOutput, settings, VERSION } from './elements.js';
 import { getDownloadList, getErrorMessages } from './modHandler.js';
+
+
+async function fetechGitHubAPI(){
+    const response = await fetch('https://api.github.com/repos/thehousewashere/MinecraftModDownloader/releases')
+    if (!response.ok) {
+        return false;
+    }
+    return response.json();
+}
+
+export async function newVersion() {
+    const api = await fetechGitHubAPI();
+    if (!api){
+        return false;
+    }
+    return VERSION < api[0]['name'];
+}
 
 export function setModal(title, body, footer) {
     modal.modalTitle.innerHTML = title;

@@ -2,6 +2,9 @@ export const root = document.getElementById('root');
 export const body = document.getElementById('body');
 export const style = document.getElementById('style');
 export const urlsText = document.getElementById('urlsText');
+export const APP = window.location.hostname == '';
+export const VERSION = '24.11.19';
+
 
 export const modOutput = {
     div: document.getElementById('modOutput'),
@@ -35,7 +38,8 @@ export const settings = {
     errorSwitch: document.getElementById('copyErrorSwitch'),
     topErrorSwitch: document.getElementById('topErrorSwitch'),
     zipDownloadSwitch: document.getElementById('zipDownloadSwitch'),
-    removeDupesSwitch: document.getElementById('removeDupesSwitch')
+    removeDupesSwitch: document.getElementById('removeDupesSwitch'),
+    updateLink: document.getElementById('settingsUpdateLink')
 }
 
 export const TEXTBACKGROUNDCOLOR = {
