@@ -1,27 +1,35 @@
 export const root = document.getElementById('root');
 export const body = document.getElementById('body');
 export const style = document.getElementById('style');
-export const urlsText = document.getElementById('urlsText');
 export const APP = window.location.hostname == '';
 export const VERSION = '24.11.22';
 
-
-export const modOutput = {
-    div: document.getElementById('modOutput'),
-    title: document.getElementById('modOutputTitle'),
-    text: document.getElementById('modOutputText'),
-    copyButton: document.getElementById('modOutputCopy'),
-    downloadButton: document.getElementById('modOutputDownload'),
-    progressBar: document.getElementById('modOutputProgressBar'),
-    progressDiv: document.getElementById('modOutputProgressDiv')
+export const menuButtons = {
+    search: document.getElementById('searchButton'),
+    urlDownloader: document.getElementById('urlDownloaderButton')
 }
 
-export const modInput = {
-    textArea: document.getElementById('modInputTextArea'),
-    loadButton: document.getElementById('modInputLoadButton'),
-    verisonArea: document.getElementById('modInputVerisonArea'),
-    loaderDropdown: document.getElementById('modInputLoaderDropdown'),
-    AddDependsButton: document.getElementById('modInputAddDependsButton')
+export let modOutput, modInput;
+
+export function urlDownloaderElements(){
+    modOutput = {
+        div: document.getElementById('modOutput'),
+        title: document.getElementById('modOutputTitle'),
+        text: document.getElementById('modOutputText'),
+        copyButton: document.getElementById('modOutputCopy'),
+        downloadButton: document.getElementById('modOutputDownload'),
+        progressBar: document.getElementById('modOutputProgressBar'),
+        progressDiv: document.getElementById('modOutputProgressDiv')
+    }
+    
+    modInput = {
+        urlsText: document.getElementById('urlsText'),
+        textArea: document.getElementById('modInputTextArea'),
+        loadButton: document.getElementById('modInputLoadButton'),
+        verisonArea: document.getElementById('modInputVerisonArea'),
+        loaderDropdown: document.getElementById('modInputLoaderDropdown'),
+        AddDependsButton: document.getElementById('modInputAddDependsButton')
+    }
 }
 
 export const modal = {
