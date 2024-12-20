@@ -9,7 +9,27 @@ export const menuButtons = {
     urlDownloader: document.getElementById('urlDownloaderButton')
 }
 
-export let modOutput, modInput;
+export let modOutput, modInput, search;
+
+export function searchElements(){
+    search = {
+        versionInput: document.getElementById('searchVersionInput'),
+        limitInput: document.getElementById('searchLimitInput'),
+        loaderDropdown: document.getElementById('searchLoaderDropdown'),
+        modrinthButton: document.getElementById('searchModrinthButton'),
+        curseForgeButton: document.getElementById('searchCurseForgeButton'),
+        textArea: document.getElementById('searchTextArea'),
+        searchButton: document.getElementById('searchSearchButton'),
+        output: document.getElementById('searchOutput'),
+        sendOutput: document.getElementById('searchSendOutput'),
+        selectAllOutput: document.getElementById('searchSelectAllOutput'),
+        outputTitle: document.getElementById('searchOutputTitle'),
+        progressDiv: document.getElementById('searchProgressDiv'),
+        progressBar: document.getElementById('searchProgressBar'),
+        outputText: document.getElementById('searchOutputText')
+    };
+    
+}
 
 export function urlDownloaderElements(){
     modOutput = {
