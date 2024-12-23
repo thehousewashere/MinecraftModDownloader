@@ -2,7 +2,7 @@ export const root = document.getElementById('root');
 export const body = document.getElementById('body');
 export const style = document.getElementById('style');
 export const APP = window.location.hostname == '';
-export const VERSION = '24.11.22';
+export const VERSION = '24.12.23';
 
 export const menuButtons = {
     search: document.getElementById('searchButton'),
@@ -22,11 +22,13 @@ export function searchElements(){
         searchButton: document.getElementById('searchSearchButton'),
         output: document.getElementById('searchOutput'),
         sendOutput: document.getElementById('searchSendOutput'),
-        selectAllOutput: document.getElementById('searchSelectAllOutput'),
+        // selectAllOutput: document.getElementById('searchSelectAllOutput'),
         outputTitle: document.getElementById('searchOutputTitle'),
         progressDiv: document.getElementById('searchProgressDiv'),
         progressBar: document.getElementById('searchProgressBar'),
-        outputText: document.getElementById('searchOutputText')
+        outputText: document.getElementById('searchOutputText'),
+        optionsText: document.getElementById('searchOptionsText'),
+        cat: document.getElementById('cat')
     };
     
 }
@@ -57,7 +59,8 @@ export const modal = {
     modalTitle: document.getElementById('menu-modal-title'),
     modalBody: document.getElementById('menu-modal-body'),
     modalFooter: document.getElementById('menu-modal-footer'),
-    modalCloseButton: document.getElementById('modal-close-button')
+    modalCloseButton: document.getElementById('modal-close-button'),
+    modalSize: document.getElementById('modal-size')
 }
 
 export const settings = {
@@ -67,7 +70,9 @@ export const settings = {
     topErrorSwitch: document.getElementById('topErrorSwitch'),
     zipDownloadSwitch: document.getElementById('zipDownloadSwitch'),
     removeDupesSwitch: document.getElementById('removeDupesSwitch'),
-    updateLink: document.getElementById('settingsUpdateLink')
+    updateLink: document.getElementById('settingsUpdateLink'),
+    footer: document.getElementById('settingsModalfooter'),
+    verison: document.getElementById('settingsVerison')
 }
 
 export const TEXTBACKGROUNDCOLOR = {

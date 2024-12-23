@@ -1,9 +1,9 @@
 <div class="input-group">
-    <table class="table no-padding-table" style="width: 94.3%;">
+    <table class="table no-padding-table" style="width: 90%;">
         <thead>
             <tr>
                 <th>Search Settings</th>
-                <th style="width: 10%;">Options</th>
+                <th id="searchOptionsText" style="width: 10%;">Options</th>
                 <th>Query</th>
             </tr>
         </thead>
@@ -33,41 +33,43 @@
                 <td class="d-grid">
                     <input type="checkbox" class="btn-check" id="searchModrinthButton" checked autocomplete="off">
                     <label class="btn" for="searchModrinthButton">Modrinth</label>
-                    <br>
                     <input type="checkbox" class="btn-check" id="searchCurseForgeButton" checked autocomplete="off">
                     <label class="btn" for="searchCurseForgeButton">CurseForge</label>
-                    <br>
                 </td>
                 <td>
-                    <textarea class="form-control" aria-label="With textarea" id="searchTextArea"
-                    placeholder="e.g Twigs" style="height: 78px;"></textarea>
+                    <input class="form-control" aria-label="With textarea" id="searchTextArea"
+                    placeholder="e.g Twigs" style="height: 78px;"></input>
                     <!-- style="height: 174px;"  -->
+                    <pre id="cat" class="cat" style="line-height: 90%;" data-count="0">    
+
+
+                          |\__/,|   (`\
+                        _.|o o  |_   ) )
+                      -(((---(((--------<br></pre>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <button class="btn btn-outline-secondary" type="button" id="searchSearchButton">Search</button>
+    <button class="btn btn-outline-secondary" type="button" id="searchSearchButton" style="width: 10%;">Search</button>
 </div>
 
-<div class="card border-primary" id="searchOutput">
+<div class="card border-primary" id="searchOutput" >
     <div class="card-header">
-        <button type="button" class="btn btn-warning" id="searchSelectAllOutput"><i class="bi bi-check-all"></i></button>
+        <!-- <button type="button" class="btn btn-warning" id="searchSelectAllOutput"><i class="bi bi-check-all"></i></button> -->
         <button type="button" class="btn btn-primary" id="searchSendOutput"><i class="bi bi-arrow-up-left"></i></button>
-        <t id="searchOutputTitle">Results</t>
-
+        <t id="searchOutputTitle">List</t>
     </div>
     <div class="card-body">
         <div id="searchProgressDiv" class="progress" role="progressbar"
             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="display: none;">
             <div id="searchProgressBar" class="progress-bar" style="width: 0%"></div>
         </div>
-        <div class="card-text" id="searchOutputText">
+        <div class="card-text" id="searchOutputText" data-empty="true">
             <ol>
-                <li>Check the console for the search URLs. 👁️👃👁️</li>
                 <li>Enter a query.</li>
-                <li>Select the mod you want to keep.</li>
-                <li>Click the arrow button to send them to the URL Downloader.</li>
+                <li>Select the mods you want to keep.</li>
+                <li>Click the <span class="badge rounded-pill text-bg-primary"><i class="bi bi-arrow-up-left"></i></span> button to send the mods to the URL Downloader.</li>
             </ol>
     </div>
 </div>

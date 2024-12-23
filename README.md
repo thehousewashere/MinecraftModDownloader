@@ -5,4 +5,6 @@ This bulk downloads Minecraft mods hosted on Modrinth, and CurseForge.
 
 > [Releases](https://github.com/thehousewashere/MinecraftModDownloader/releases) 
 
-![Screenshot](screenshot1.png)
+![Screenshot](screenshots/1.png)
+![Screenshot](screenshots/2.png)
+![Screenshot](screenshots/3.png)

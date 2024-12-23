@@ -53,7 +53,12 @@ export async function newVersion() {
     return api[0]['name'] > VERSION;
 }
 
-export function setModal(title, body, footer) {
+export function setModal(title, body, footer, large) {
+    if (large){
+        modal.modalSize.className = 'modal-dialog modal-lg';
+    } else {
+        modal.modalSize.className = 'modal-dialog';
+    }
     modal.modalTitle.innerHTML = title;
     modal.modalBody.innerHTML = body;
     modal.modalFooter.innerHTML = footer;
@@ -69,41 +74,6 @@ export function setOutput(title, body, color, border) {
     } else {
         modOutput.div.setAttribute('class', `card bg-${color}`);
     }
-}
-
-export function addEventListener() {
-    modOutput.copyButton.addEventListener('click', async () => {
-        modOutput.copyButton.disabled = true;
-        if (settings.downloadSwitch.checked && !settings.errorSwitch.checked) {
-            navigator.clipboard.writeText(getDownloadList().join('\n'));
-            if (!modOutput.title.innerText.includes('(Copied)')) {
-                modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
-            }
-            modOutput.copyButton.disabled = false;
-            return;
-        } else if (!settings.downloadSwitch.checked && settings.errorSwitch.checked) {
-            const err = document.createElement('div');
-            err.innerHTML = getErrorMessages().join('\n');
-            navigator.clipboard.writeText(err.innerText);
-            if (!modOutput.title.innerText.includes('(Copied)')) {
-                modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
-            }
-            modOutput.copyButton.disabled = false;
-            return;
-        } else if (settings.downloadSwitch.checked && settings.errorSwitch.checked) {
-            const err = document.createElement('div');
-            err.innerHTML = getErrorMessages().join('\n');
-            navigator.clipboard.writeText(err.innerText + getDownloadList().join('\n'));
-            if (!modOutput.title.innerText.includes('(Copied)')) {
-                modOutput.title.innerText = modOutput.title.innerText + ' (Copied)';
-            }
-        } else if (!settings.downloadSwitch.checked && !settings.errorSwitch.checked) {
-            if (!modOutput.title.innerText.includes('(Copying disabled in Settings)')){
-                modOutput.title.innerText = modOutput.title.innerText + ' (Copying disabled in Settings)';
-            }
-        }
-        modOutput.copyButton.disabled = false;
-    });
 }
 
 export function getTimestamp() {

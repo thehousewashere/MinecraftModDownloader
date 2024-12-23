@@ -1,4 +1,4 @@
-import { APP, settings } from './elements.js';
+import { APP, settings, VERSION } from './elements.js';
 import * as Util from './util.js';
 
 export async function settingsModal(){
@@ -7,6 +7,10 @@ export async function settingsModal(){
     settings.topErrorSwitch.checked = localStorage.getItem('settingsTopErrorSwitch') === 'true';
     settings.zipDownloadSwitch.checked = localStorage.getItem('settingsZipDownloadSwitch') === 'true';
     settings.removeDupesSwitch.checkVisibility = localStorage.getItem('removeDupesSwitch') === 'true';
+    settings.verison.innerHTML = `
+    Version:                    
+    <span class="badge rounded-pill text-bg-primary">${VERSION}</span>
+    `;
     settings.modal.show();
     if (await Util.newVersion()){
         settings.updateLink.style.display = 'block';
