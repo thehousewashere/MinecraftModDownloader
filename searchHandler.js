@@ -6,6 +6,7 @@ let list = [];
 
 export async function searchPage() {
     menuButtons.urlDownloader.className = 'nav-link';
+    menuButtons.modListDoc.className = 'nav-link';
     menuButtons.search.className = 'nav-link active';
     const response = await fetch('search.html', { cache: 'no-store' });
     root.innerHTML = await response.text();

@@ -6,7 +6,8 @@ export const VERSION = '24.12.23';
 
 export const menuButtons = {
     search: document.getElementById('searchButton'),
-    urlDownloader: document.getElementById('urlDownloaderButton')
+    urlDownloader: document.getElementById('urlDownloaderButton'),
+    modListDoc: document.getElementById('modListDocButton')
 }
 
 export let modOutput, modInput, search;
