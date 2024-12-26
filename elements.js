@@ -10,7 +10,7 @@ export const menuButtons = {
     modListDoc: document.getElementById('modListDocButton')
 }
 
-export let modOutput, modInput, search;
+export let modOutput, modInput, search, modListDoc;
 
 export function searchElements(){
     search = {
@@ -32,6 +32,12 @@ export function searchElements(){
         cat: document.getElementById('cat')
     };
     
+}
+
+export function modListDocElements(){
+    modListDoc = {
+        downloadHTML: document.getElementById('modListDocDownloadHTML')
+    }
 }
 
 export function urlDownloaderElements(){

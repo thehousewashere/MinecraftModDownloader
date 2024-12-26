@@ -15,6 +15,7 @@ export function getErrorMessages(){
 export async function urlDownloader(verison, loader, urls){
     menuButtons.urlDownloader.className = 'nav-link active';
     menuButtons.search.className = 'nav-link';
+    menuButtons.modListDoc.className = 'nav-link';
     const response = await fetch('urlDownloader.html', {cache: 'no-store'});
     root.innerHTML = await response.text(); //TODO: Fix this
     document.getElementById('CFsvg').innerHTML = 
