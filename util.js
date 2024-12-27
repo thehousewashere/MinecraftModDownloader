@@ -65,6 +65,10 @@ export function setModal(title, body, footer, large) {
     modal.modal.show();
 }
 
+export function modalClose() {
+    modal.modal.hide(); 
+}
+
 export function setOutput(title, body, color, border) {
     modOutput.title.innerHTML = title;
     modOutput.text.innerHTML = body;

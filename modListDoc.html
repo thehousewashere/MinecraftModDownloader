@@ -1,4 +1,19 @@
 <div class="input-group">
+    <div>
+        <span class="input-group-text">Document Settings</span>
+        <input id="modInputVerisonArea" type="text" class="form-control" placeholder="Version (e.g 1.20.1)"
+            aria-label="Version" aria-describedby="basic-addon1">
+        <div class="form-floating">
+            <select class="form-select" id="modInputLoaderDropdown" style="height: 60px;">
+                <option value="Forge">Forge</option>
+                <option value="NeoForge">NeoForge</option>
+                <option value="Fabric">Fabric</option>
+                <option value="Quilt">Quilt</option>
+                <option selected value="N/A Loader">No Specified Loader</option>
+            </select>
+            <label for="modInputLoaderDropdown">Loader</label>
+        </div>
+    </div>
     <span class="input-group-text" id="urlsText">URLs</span>
     <textarea class="form-control" aria-label="With textarea" id="modInputTextArea"
         placeholder="e.g https://modrinth.com/mod/create-track-map&#10;https://www.curseforge.com/minecraft/mc-mods/twigs"></textarea>
@@ -29,8 +44,8 @@
 
 <div class="card border-primary" id="modOutput">
     <div class="card-header">
-        <button type="button" class="btn btn-warning" id="modOutputCopy"><i class="bi bi-copy"></i></button>
-        <button type="button" class="btn btn-primary" id="modOutputDownload"><i class="bi bi-download"></i></button>
+        <!-- <button type="button" class="btn btn-warning" id="modOutputCopy"><i class="bi bi-copy"></i></button>
+        <button type="button" class="btn btn-primary" id="modOutputDownload"><i class="bi bi-download"></i></button> -->
         <button type="button" class="btn btn-primary" id="modListDocDownloadHTML"><i class="bi bi-filetype-html"></i></button>
         <t id="modOutputTitle">Output</t>
 
@@ -40,6 +55,8 @@
             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="display: none;">
             <div id="modOutputProgressBar" class="progress-bar" style="width: 0%"></div>
         </div>
-        <div class="card-text" id="modOutputText">Insert Modrinth and CurseForge mod page links to get a mod list document. Perfect for showing your friends.</div>
+        <div class="card-text" id="modOutputText">Insert Modrinth and CurseForge mod page links to get a mod list document. Perfect for showing your friends.
+            NOTE: This feature is still being actively worked on. Currently, there is no error handling,
+        </div>
     </div>
 </div>

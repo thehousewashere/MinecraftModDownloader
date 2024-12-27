@@ -44,69 +44,132 @@ function addEventListeners(){
         } else {
             theme = `https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css`;
         }
-        const endLine = '\n';
+
+        const loader = modInput.loaderDropdown.value;
+        const verison = modInput.verisonArea.value.trim() || '';
         let html = `
-        <!doctype html>
-        <html lang="en">
+<!doctype html>
+<html lang="en">
 
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Minecraft Mod Downloader</title>
-            <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/thehousewashere/MinecraftModDownloader/refs/heads/main/icon.ico">
-            <link href="${theme}" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-        </head>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minecraft Mod Downloader</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/thehousewashere/MinecraftModDownloader/refs/heads/main/icon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
 
-        <style>
-            ::-webkit-scrollbar {
-                display: none;
-            }
+</head>
 
-            body {
-                overflow-x: hidden;
-            }
-        </style>
+<style>
+    ::-webkit-scrollbar {
+        display: none;
+    }
 
-        <body id="body" data-bs-theme="${body.getAttribute('data-bs-theme')}">
-            <nav class="navbar bg-body-tertiary">
-                <div class="container-fluid">
-                    <a class="navbar-brand"><img src="https://raw.githubusercontent.com/thehousewashere/MinecraftModDownloader/refs/heads/main/icon.ico" class="rounded" style="width: 50px; height: 50px;">
-                        Minecraft Mod Downloader</a>
-                    <div>
-                        <t onclick=" window.open('https://thehousewashere.github.io/MinecraftModDownloader/','_blank')">
-                            <i class="bi bi-globe-americas"></i> Website</i>
-                        </t>
-                        <br>
-                        <t onclick=" window.open('https://github.com/thehousewashere/MinecraftModDownloader','_blank')">
-                            <i class="bi bi-github"></i> Repo</i>
-                        </t>
-                    </div>
+    body {
+        overflow-x: hidden;
+    }
+</style>
+
+<body id="body" data-bs-theme="dark">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid pb-2">
+            <div class="row">
+                <div class="col pt-1" style="width: 0px;">
+                    <!-- <t class="navbar-brand"><img src="https://raw.githubusercontent.com/thehousewashere/MinecraftModDownloader/refs/heads/main/icon.ico" class="rounded" style="width: 50px; height: 50px;">
+                                Minecraft Mod Downloader</t> -->
+                    <img src="https://raw.githubusercontent.com/thehousewashere/MinecraftModDownloader/refs/heads/main/icon.ico"
+                        class="rounded" style="height: 50px;">
                 </div>
-            </nav>
-            <button type="button" class="btn btn-warning" id="modOutputCopy" onclick="getModLinks()"><i class="bi bi-copy"></i></button>
-            
-            ${output}
+                <div class="col ps-0">
+                    <t class="navbar-brand">Minecraft Mod Downloader</t>
+                    <t id="loader">${loader}</t>
+                    <t id="verison">${verison}</t>
+                </div>
+            </div>
 
-            <script>
-                function getModLinks(){
-                    const links = document.querySelectorAll('a');
-      
-                    const hrefs = [];
-                    links.forEach(link => {
-                        hrefs.push(link.href);
-                    });
-                    
-                    navigator.clipboard.writeText(hrefs.join('\\n'));
+            <div class="pt-1">
+                <t onclick=" window.open('https://thehousewashere.github.io/MinecraftModDownloader/','_blank')">
+                    <i class="bi bi-globe-americas"></i> Website</i>
+                </t>
+                <br>
+                <t onclick=" window.open('https://github.com/thehousewashere/MinecraftModDownloader','_blank')">
+                    <i class="bi bi-github"></i> Repo</i>
+                </t>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div>
+                <button id="downloadButton" type="button" class="btn btn-primary"><i
+                        class="bi bi-download"></i></button>
+                <button type="button" class="btn btn-warning" onclick="getModLinks()"><i
+                        class="bi bi-copy"></i></button>
+            </div>
+        </div>
+
+    </nav>
+
+    ${output}
+
+    <script>
+        let modLinkCount = 0;
+
+        function package(){
+            const links = document.querySelectorAll('a');
+            let final = '';
+            const hrefs = [];
+            links.forEach(link => {
+                final += link.href.replaceAll('https://modrinth.com/mod/', 'm/').replaceAll('https://www.curseforge.com/minecraft/mc-mods/', 'cf/') + '//';
+            });
+            return final;
+        }
+
+        document.getElementById('downloadButton').addEventListener('click', () => {
+            getCount();
+            if (modLinkCount <= 3000){
+                let loader = document.getElementById('loader').innerText;
+                if (loader == 'N/A Loader'){
+                    loader = 'None';
                 }
-            </script>
+                let urls = package();
+                console.log(urls)
+                window.open("https://thehousewashere.github.io/MinecraftModDownloader/?v="+document.getElementById('verison').innerText+"&l="+loader+"&d="+urls, '_blank');
+            } else {
+                window.open("https://thehousewashere.github.io/MinecraftModDownloader/?file="+window.location.href, '_blank');
+            }
+            
+        });
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-                crossorigin="anonymous"></script>
-        </body>
+        function getCount(){
+            modLinkCount = 0;
+            const links = document.querySelectorAll('a');
+            links.forEach(link => {
+                modLinkCount += link.href.replaceAll('https://modrinth.com/mod/', 'm/').replaceAll('https://www.curseforge.com/minecraft/mc-mods/', 'cf/').length;
+            });
+        }
 
-        </html>
+        function getModLinks() {
+            const links = document.querySelectorAll('a');
+
+            const hrefs = [];
+            links.forEach(link => {
+                hrefs.push(link.href);
+            });
+
+            navigator.clipboard.writeText(hrefs.join('\\n'));
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html> 
         `;
 
         let blob = new Blob([html], {type: "text/html"});
@@ -123,14 +186,14 @@ async function generateDocument(list){
             let mod = await fetch(e).then(response => response.json());
             const title = mod['title'];
             const icon = mod['thumbnail'];
-            final += `<tr><td><img src="${icon}" style="width: 50px; height 50px;"></td> <td><b>${title}</b><br> <a class="link-opacity-50-hover" href="${url}">${url}</a></td></tr>`;
+            final += `<tr><td><img src="${icon}" style="width: 50px; height: 50px;"></td> <td><b>${title}</b><br> <a class="link-opacity-50-hover" href="${url}">${url}</a></td></tr>`;
         } else if (e.includes('https://modrinth.com/mod/')) {
             const url = e;
             e = e.replace('https://modrinth.com/mod/', 'https://api.modrinth.com/v2/project/');
             let mod = await fetch(e).then(response => response.json());
             const title = mod['title'];
             const icon = mod['icon_url'];
-            final += `<tr><td><img src="${icon}" style="width: 50px; height 50px;"></td> <td><b>${title}</b><br> <a class="link-opacity-50-hover" href="${url}">${url}</a></td></tr>`;
+            final += `<tr><td><img src="${icon}" style="width: 50px; height: 50px;"></td> <td><b>${title}</b><br> <a class="link-opacity-50-hover" href="${url}">${url}</a></td></tr>`;
         } else {
             //Do something
         }
