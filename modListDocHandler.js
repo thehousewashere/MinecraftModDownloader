@@ -130,7 +130,7 @@ function addEventListeners(){
 
         document.getElementById('downloadButton').addEventListener('click', () => {
             getCount();
-            if (modLinkCount <= 3000){
+            if (modLinkCount <= 5000){
                 let loader = document.getElementById('loader').innerText;
                 if (loader == 'N/A Loader'){
                     loader = 'None';

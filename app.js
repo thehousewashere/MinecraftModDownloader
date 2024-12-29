@@ -23,7 +23,7 @@ document.getElementById('themeButton').addEventListener('click', themeModal);
 const params = new URLSearchParams(window.location.search);
 const file = params.get('file') || '';
 if (file.trim() != ''){
-    window.history.replaceState({}, document.title, window.location.origin);
+    window.history.replaceState({}, document.title, window.location.origin + '/MinecraftModDownloader/'); //TODO: Change for app verison.
     Util.setModal(`Upload MMD Doc`, 
         `
         <div class="input-group mb-3">
