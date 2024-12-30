@@ -62,8 +62,9 @@ if (file.trim() != ''){
 }
 const verison = params.get('v') || '';
 const loader = params.get('l') || ''
-const mods = params.get('d');
-console.log(verison, loader, mods);
+const mods = params.get('d') || '';
 if (mods.trim() != ''){
-    urlDownloader(verison, loader, mods.split('//').join('\n').replaceAll('m/', 'https://modrinth.com/mod/').replaceAll('cf/', 'https://www.curseforge.com/minecraft/mc-mods/'));
+    urlDownloader(verison, loader, mods.split('//').join('\n').replaceAll('m/', 'https://modrinth.com/mod/').replaceAll('cf/', 'https://www.curseforge.com/minecraft/mc-mods/').replaceAll('mdn/', 'https://cdn.modrinth.com/data/').replaceAll('cfdn/', 'https://mediafiles.forgecdn.net/files/'));
+} else {
+    urlDownloader(verison, loader, '');
 }

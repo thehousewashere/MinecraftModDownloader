@@ -12,6 +12,9 @@ export async function searchPage() {
     root.innerHTML = await response.text();
     searchElements();
     addEventListeners();
+    const params = new URLSearchParams(window.location.search);
+    search.versionInput.value = params.get('v') || '';
+    search.loaderDropdown.value = params.get('l') || 'N/A Loader'
     list = [];
 }
 

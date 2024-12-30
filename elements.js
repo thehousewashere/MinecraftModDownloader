@@ -47,6 +47,7 @@ export function urlDownloaderElements(){
         text: document.getElementById('modOutputText'),
         copyButton: document.getElementById('modOutputCopy'),
         downloadButton: document.getElementById('modOutputDownload'),
+        downloadHTML: document.getElementById('modOutputDocDownloadHTML'),
         progressBar: document.getElementById('modOutputProgressBar'),
         progressDiv: document.getElementById('modOutputProgressDiv')
     }
