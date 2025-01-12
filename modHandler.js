@@ -32,7 +32,7 @@ export async function urlDownloader(verison, loader, urls) {
     } else {
         const params = new URLSearchParams(window.location.search);
         modInput.verisonArea.value = params.get('v') || '';
-        modInput.loaderDropdown.value = params.get('l') || 'N/A Loader'
+        modInput.loaderDropdown.value = params.get('l') || 'Forge';
         let mods = params.get('d') || ''; 
         if (mods.trim() != ''){
             modInput.textArea.value = mods.split('//').join('\n').replaceAll('m/', 'https://modrinth.com/mod/').replaceAll('cf/', 'https://www.curseforge.com/minecraft/mc-mods/').replaceAll('mdn/', 'https://cdn.modrinth.com/data/').replaceAll('cfdn/', 'https://mediafiles.forgecdn.net/files/')
@@ -51,6 +51,7 @@ async function modDisplay(limit, current, mod) {
         nonErrorResults = final.filter(result => result !== null);
         if (localStorage.getItem('settingsRemoveDupesSwitch') === 'true') {
             nonErrorResults = nonErrorResults.filter((item, index) => nonErrorResults.indexOf(item) === index);
+            errorMessages = errorMessages.filter((item, index) => errorMessages.indexOf(item) === index);
             //TODO: Remove Modrinth and CurseForge duplicates
             // downloadList.forEach(url => {
             //     console.log(url);
@@ -70,8 +71,9 @@ async function modDisplay(limit, current, mod) {
     }
 }
 
+
 function addEventListener() {
-    modInput.loadButton.addEventListener('click', () => {
+    modInput.loadButton.addEventListener('click', async () => {
         modOutput.copyButton.disabled = true;
         modOutput.downloadButton.disabled = true;
         modOutput.downloadHTML.disabled = true;
@@ -83,12 +85,32 @@ function addEventListener() {
             Util.setOutput('Output Error', 'No text in the version area.', COLOR.DANGER, false);
             return;
         }
-        let promises = [];
         errorMessages = [];
         downloadList = [];
         final = [];
-        const userInput = parseInput(modInput.textArea.value);
-        
+        let userInput = parseInput(modInput.textArea.value);
+        const collections = userInput.filter(url => url.includes('https://modrinth.com/collection/'));
+        await new Promise(async (resolve) => {
+            for (const e of collections) {
+                if (e.includes('https://modrinth.com/collection/')){
+                    const url = e.replace('https://modrinth.com', 'https://api.modrinth.com/v3');
+                    const mod = await fetch(url)
+                        .then(async response => {
+                            if (!response.ok) {
+                                    const errorMessage = `<tr><td></td><td><i class="bi bi-bug-fill"></i> (<a href="https://docs.modrinth.com/#tag/users/operation/getUserProjects" target="_blank" rel="noopener noreferrer" class='${TEXTCOLOR.DANGER} fw-bold'>${response.status}</a>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/')}</td>`;
+                                    errorMessages.push(errorMessage);
+                                    return null;
+                            }
+                            return response.json();
+                        });
+                    mod['projects'].forEach(theMod => {
+                        userInput.push('https://modrinth.com/mod/'+theMod);
+                    });
+                }
+                userInput = userInput.filter(everything => everything !== e);
+            }
+            resolve();
+        });
         let urlCount = userInput.length;
         let index = 1;
         modInput.urlsText.innerHTML = `URLs <br> (${urlCount})`;
@@ -97,6 +119,7 @@ function addEventListener() {
                 let mod = '';
                 let verison = modInput.verisonArea.value.toString();
                 let loader = modInput.loaderDropdown.value;
+                let errorFlag = true;
                 if (e.includes('https://www.curseforge.com/')) {
                     e = e.replace('https://www.curseforge.com/', 'https://api.cfwidget.com/');
                     mod = await fetch(e).then(response => {
@@ -156,7 +179,7 @@ function addEventListener() {
                     e = e.replace('https://modrinth.com/mod/', 'https://api.modrinth.com/v2/project/');
                     const nonVerison = e;
                     e += '/version';
-                    for (let i = 0; i < 65; i++){
+                    for (let i = 0; i < 200; i++){
                         mod = await fetch(e)
                         .then(async response => {
                             if (!response.ok) {
@@ -166,6 +189,7 @@ function addEventListener() {
                                 // } else {
                                     const errorMessage = `<tr><td></td><td><i class="bi bi-bug-fill"></i> (<a href="https://docs.modrinth.com/#tag/users/operation/getUserProjects" target="_blank" rel="noopener noreferrer" class='${TEXTCOLOR.DANGER} fw-bold'>${response.status}</a>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/')}</td>`;
                                     errorMessages.push(errorMessage);
+                                    errorFlag = false;
                                     return null;
                                 // }
                             }
@@ -212,9 +236,11 @@ function addEventListener() {
                                 } else {
                                     const errorMessage = `<tr><td></td><td><i class="bi bi-bug-fill"></i> (<b class='${TEXTCOLOR.WARNING}'>Mod not found under ${loader}</b>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}</td>`;
                                     errorMessages.push(errorMessage);
+                                    errorFlag = false;
                                     return null;
                                 }
                             }
+                            errorFlag = false;
                             return null;
                         })
                         .catch(async error => {
@@ -223,6 +249,7 @@ function addEventListener() {
                                 errorMessage = `<tr><td></td><td><i class="bi bi-bug-fill"></i> (<b class='${TEXTCOLOR.WARNING}'>Mod not found in verison ${verison}</b>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}</td>`;
                                 console.error(`(Mod not found in verison ${verison}): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}`);
                                 errorMessages.push(errorMessage);
+                                errorFlag = false;
                                 return null;
                             } else if (error == 'TypeError: NetworkError when attempting to fetch resource.' || error == 'TypeError: Failed to fetch'){
                                     await new Promise(resolve => setTimeout(resolve, 10000)); // Wait for 10 seconds before retry
@@ -230,11 +257,13 @@ function addEventListener() {
                                 errorMessage = `<tr><td></td><td><i class="bi bi-bug-fill"></i> (<b class='${TEXTCOLOR.DANGER}'>${error.message}</b>): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}</td>`;
                                 console.error(`(${error.message}): ${e.replace('https://api.modrinth.com/v2/project/', 'https://modrinth.com/mod/').replace('/version', '')}`);
                                 errorMessages.push(errorMessage);
+                                errorFlag = false;
                                 return null;
                             }
 
                         });
-                        if (mod) {
+                        if (mod || errorFlag == false) {
+                            console.log(e, i, mod);
                             break;
                         }
                     }
@@ -262,7 +291,7 @@ function addEventListener() {
                     index++;
                 }
             });
-        } 
+        }
     });
 
     modOutput.downloadButton.addEventListener('click', async () => {
@@ -493,6 +522,6 @@ function parseInput(input) {
     return input.split(/\n|,/)
         .map(item => item.trim())
         .filter(item => item !== '' && 
-            (item.includes("https://www.curseforge.com/") || item.includes("https://modrinth.com/mod/") || item.includes("https://cdn.modrinth.com/data/") || item.includes("https://mediafiles.forgecdn.net/files/"))
+            (item.includes("https://www.curseforge.com/") || item.includes("https://modrinth.com/mod/") || item.includes("https://cdn.modrinth.com/data/") || item.includes("https://mediafiles.forgecdn.net/files/") || item.includes('https://modrinth.com/collection/'))
         );
 }
