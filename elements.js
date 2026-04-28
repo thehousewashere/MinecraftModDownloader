@@ -2,7 +2,7 @@ export const root = document.getElementById('root');
 export const body = document.getElementById('body');
 export const style = document.getElementById('style');
 export const APP = window.location.hostname == '';
-export const VERSION = '24.12.23';
+export const VERSION = '26.4.28';
 
 export const menuButtons = {
     search: document.getElementById('searchButton'),

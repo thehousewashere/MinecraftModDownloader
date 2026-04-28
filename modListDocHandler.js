@@ -161,7 +161,7 @@ function getTimestamp() {
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
     crossorigin="anonymous"></script>
-
+  <hta:application border="thin" />
 </head>
 
 <style>
@@ -175,6 +175,9 @@ body {
 </style>
 
 <body id="body" data-bs-theme="dark">
+    <div class="container-fluid bg-warning-subtle py-1">
+        The following is a work in progress, and some features may not work as intended.
+    </div>
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid pb-2">
         <div class="row">
@@ -209,7 +212,6 @@ body {
                     class="bi bi-copy"></i></button>
         </div>
     </div>
-
 </nav>
 
 ${output}
